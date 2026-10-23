@@ -1,0 +1,70 @@
+// Copyright 2018 gRPC authors.
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+
+//     http://www.apache.org/licenses/LICENSE-2.0
+
+
+// distributed under the License is distributed on an "AS IS" BASIS,
+
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package grpc.gcp;
+
+message ApiConfig {
+
+  ChannelPoolConfig channel_pool = 2;
+
+
+  repeated MethodConfig method = 1001;
+}
+
+message ChannelPoolConfig {
+
+  uint32 max_size = 1;
+
+  uint64 idle_timeout = 2;
+
+
+
+  uint32 max_concurrent_streams_low_watermark = 3;
+}
+
+message MethodConfig {
+
+
+
+  repeated string name = 1;
+
+
+  AffinityConfig affinity = 1001;
+}
+
+message AffinityConfig {
+  enum Command {
+
+
+
+    BOUND = 0;
+
+
+
+
+    BIND = 1;
+
+
+
+
+    UNBIND = 2;
+  }
+
+  Command command = 2;
+
+
+  string affinity_key = 3;
+}

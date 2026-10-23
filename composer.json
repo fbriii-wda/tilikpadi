@@ -1,0 +1,7 @@
+{
+    "require": {
+        "kreait/firebase-php": "^8.6",
+        "google/auth": "^1.45",
+        "guzzlehttp/guzzle": "^8.0"
+    }
+}
