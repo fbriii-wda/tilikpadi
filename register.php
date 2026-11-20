@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
     <link rel="stylesheet" href="assets/libs/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/libs/bootstrap-icons/bootstrap-icons.css">
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/main.css?v=202611210112">
 </head>
 <body>
     <div class="login-wrapper">
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="login-bg-shape login-bg-shape-2"></div>
         <div class="login-card">
             <a href="page-login.php" class="login-brand text-decoration-none">
-                <img src="assets/images/logo.jpg" alt="Logo Tilik Padi" class="brand-logo-image">
+                <img src="assets/images/favicon.png" alt="Logo Tilik Padi" class="brand-logo-image">
                 <span>Tilik Padi</span>
             </a>
             <p class="login-subtitle">Buat akun untuk mengakses dasbor.</p>
@@ -124,5 +124,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
     <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/page-animations.js?v=202611210112"></script>
 </body>
 </html>

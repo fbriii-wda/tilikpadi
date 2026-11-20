@@ -29,9 +29,9 @@ document.addEventListener('DOMContentLoaded', function () {
         'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
     ];
     const severityColors = {
-        ringan: '#2E7D32',
+        ringan: '#95B794',
         sedang: '#FBC02D',
-        parah: '#EF6C00'
+        parah: '#C62828'
     };
     let selectedDashboardYear = new Date().getFullYear();
     let scanChart = null;
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 zoom: { enabled: false },
                 fontFamily: 'Plus Jakarta Sans, sans-serif'
             },
-            colors: ['#2E7D32'],
+            colors: ['#417B3C'],
             states: { hover: { filter: { type: 'none' } } },
             plotOptions: {
                 bar: {
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
             dataLabels: { enabled: false },
             legend: { show: false },
             grid: {
-                borderColor: '#E0E6E0',
+                borderColor: '#95B794',
                 strokeDashArray: 4,
                 xaxis: { lines: { show: false } }
             },
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         return monthIndex === -1 ? value : monthShortNames[monthIndex];
                     },
                     style: {
-                        colors: '#616161',
+                        colors: '#6C8B5E',
                         fontSize: '11px',
                         fontWeight: 500
                     }
@@ -120,14 +120,14 @@ document.addEventListener('DOMContentLoaded', function () {
                                 show: true,
                                 fontSize: '12px',
                                 fontWeight: 500,
-                                color: '#616161',
+                                color: '#6C8B5E',
                                 offsetY: -8
                             },
                             value: {
                                 show: true,
                                 fontSize: '26px',
                                 fontWeight: 800,
-                                color: '#1B1B1B',
+                                color: '#17281A',
                                 offsetY: 8,
                                 formatter: value => Math.round(value).toLocaleString('id-ID')
                             },
@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 label: 'Total Scan',
                                 fontSize: '11px',
                                 fontWeight: 500,
-                                color: '#616161',
+                                color: '#6C8B5E',
                                 formatter: chart => chart.globals.seriesTotals
                                     .reduce((total, count) => total + count, 0)
                                     .toLocaleString('id-ID')
@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const bar = document.createElement('div');
             bar.className = 'progress-bar';
-            bar.style.backgroundColor = severityColors[severity.label.toLowerCase()] || '#2E7D32';
+            bar.style.backgroundColor = severityColors[severity.label.toLowerCase()] || '#417B3C';
             bar.style.width = `${total > 0 ? (severity.count / total) * 100 : 0}%`;
             progress.append(bar);
             row.append(labelRow, progress);
@@ -299,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function () {
             item.className = 'chart-legend-item severity-legend-item';
             const dot = document.createElement('span');
             dot.className = 'legend-dot';
-            dot.style.backgroundColor = severityColors[severity.label.toLowerCase()] || '#2E7D32';
+            dot.style.backgroundColor = severityColors[severity.label.toLowerCase()] || '#417B3C';
             const label = document.createElement('span');
             label.className = 'text-muted-green severity-legend-label';
             label.textContent = severity.label;
@@ -373,7 +373,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 severityChart.updateOptions({
                     labels: stats.severityDistribution.map(severity => severity.label),
                     colors: stats.severityDistribution.map(
-                        severity => severityColors[severity.label.toLowerCase()] || '#2E7D32'
+                        severity => severityColors[severity.label.toLowerCase()] || '#417B3C'
                     )
                 });
                 severityChart.updateSeries(
@@ -407,56 +407,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
     refreshDashboardStats();
 
-    const datePickerTrigger = document.querySelector('#date-picker-trigger');
     const selectedDateText = document.querySelector('#selected-date');
-    
-    if (datePickerTrigger && selectedDateText) {
-        let followsCurrentDate = true;
+    const currentTimeText = document.querySelector('#current-time');
 
-        const datePicker = flatpickr(datePickerTrigger, {
-            mode: 'single',
-            dateFormat: 'Y-m-d',
-            locale: {
-                firstDayOfWeek: 1,
-                weekdays: {
-                    shorthand: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
-                    longhand: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
-                },
-                months: {
-                    shorthand: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
-                    longhand: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
-                }
-            },
-            defaultDate: new Date(),
-            onReady: function (selectedDates, dateStr, instance) {
-                selectedDateText.textContent = instance.formatDate(new Date(), 'j F Y');
-            },
-            onChange: function (selectedDates, dateStr, instance) {
-                const selectedDate = selectedDates[0];
-                selectedDateText.textContent = instance.formatDate(selectedDate, 'j F Y');
-                followsCurrentDate = selectedDate.toDateString() === new Date().toDateString();
-                const selectedYear = selectedDate.getFullYear();
-                if (selectedYear !== selectedDashboardYear) {
-                    selectedDashboardYear = selectedYear;
-                    refreshDashboardStats();
-                }
-            }
+    if (selectedDateText && currentTimeText) {
+        const dateFormatter = new Intl.DateTimeFormat('id-ID', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+            timeZone: 'Asia/Jakarta'
         });
-
-        const updateCurrentDateAtMidnight = function () {
+        const timeFormatter = new Intl.DateTimeFormat('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hourCycle: 'h23',
+            timeZone: 'Asia/Jakarta'
+        });
+        const updateDateTime = function () {
             const now = new Date();
-            const nextMidnight = new Date(now);
-            nextMidnight.setHours(24, 0, 0, 0);
-
-            window.setTimeout(function () {
-                if (followsCurrentDate) {
-                    datePicker.setDate(new Date(), true);
-                }
-                updateCurrentDateAtMidnight();
-            }, nextMidnight.getTime() - now.getTime());
+            selectedDateText.textContent = dateFormatter.format(now);
+            currentTimeText.textContent = `${timeFormatter.format(now)} WIB`;
         };
 
-        updateCurrentDateAtMidnight();
+        updateDateTime();
+        window.setInterval(updateDateTime, 1000);
     }
 
     const desktopToggleBtn = document.querySelector('#desktop-sidebar-toggle');

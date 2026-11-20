@@ -9,12 +9,12 @@
     <meta name="author" content="Tim Tilik Padi">
     <base href="/Tilik_Padi/">
     
-    <link rel="icon" type="image/png" href="assets/images/logo.jpg">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
     
     <link rel="stylesheet" href="assets/libs/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/libs/bootstrap-icons/bootstrap-icons.css">
     
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/main.css?v=202611210112">
 </head>
 <body>
 
@@ -50,5 +50,6 @@
     </div>
 
     <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/page-animations.js?v=202611210112"></script>
 </body>
 </html>

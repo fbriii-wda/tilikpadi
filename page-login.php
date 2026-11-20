@@ -69,12 +69,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="description" content="Halaman Masuk - Tilik Padi">
     <meta name="author" content="Tim Tilik Padi">
     
-    <link rel="icon" type="image/png" href="assets/images/logo.jpg">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
     
     <link rel="stylesheet" href="assets/libs/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/libs/bootstrap-icons/bootstrap-icons.css">
     
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/main.css?v=202611210114">
 </head>
 <body>
 
@@ -138,10 +138,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <i class="bi bi-google text-danger"></i>
                     <span>Google</span>
                 </button>
-                <button class="btn-social" type="button" id="btn-github">
-                    <i class="bi bi-github"></i>
-                    <span>GitHub</span>
-                </button>
             </div>
             
             <p class="login-footer-text">
@@ -154,5 +150,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
     
     <script src="assets/js/auth.js"></script>
+    <script src="assets/js/page-animations.js?v=202611210112"></script>
 </body>
 </html>

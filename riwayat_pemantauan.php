@@ -23,12 +23,19 @@ try {
         'SELECT detection.id_detection, detection.id_user, detection.image_path,
             detection.nama_penyakit, detection.confidence, detection.id_keparahan,
             detection.tanggal_deteksi, detection.infected_ratio_percent,
+            COALESCE(disease_scan_counts.total_scans, 0) AS disease_scan_count,
             user.nama AS user_name, user.email AS user_email,
             severity.label_keparahan, severity.deskripsi AS severity_description
          FROM detection
+         LEFT JOIN (
+            SELECT nama_penyakit, COUNT(*) AS total_scans
+            FROM detection
+            GROUP BY nama_penyakit
+         ) AS disease_scan_counts
+            ON disease_scan_counts.nama_penyakit = detection.nama_penyakit
          LEFT JOIN `user` AS user ON user.id_user = detection.id_user
          LEFT JOIN tingkat_keparahan AS severity ON severity.id_keparahan = detection.id_keparahan
-         ORDER BY detection.tanggal_deteksi DESC, detection.id_detection DESC
+         ORDER BY disease_scan_count DESC, detection.tanggal_deteksi DESC, detection.id_detection DESC
          LIMIT 100'
     )->fetch_all(MYSQLI_ASSOC);
 
@@ -64,22 +71,22 @@ try {
   <meta name="description" content="Tinjau rekam jejak pemindaian dan hasil deteksi penyakit tanaman padi.">
   <meta name="author" content="Tim Tilik Padi">
 
-  <link rel="icon" type="image/png" href="assets/images/logo.jpg">
+  <link rel="icon" type="image/png" href="assets/images/favicon.png">
 
   <link rel="stylesheet" href="assets/libs/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/libs/bootstrap-icons/bootstrap-icons.css">
   <link rel="stylesheet" href="assets/libs/apexcharts/apexcharts.css">
   <link rel="stylesheet" href="assets/libs/flatpickr/flatpickr.min.css">
 
-  <link rel="stylesheet" href="assets/css/main.css?v=202610220612">
+  <link rel="stylesheet" href="assets/css/main.css?v=202611210112">
 </head>
 
 <body>
 
   <div class="sidebar-wrapper" id="sidebar">
     <a href="index.php" class="sidebar-brand">
-      <img src="assets/images/logo.jpg" alt="Logo Tilik Padi" class="brand-logo-image">
-      <span>Tilik Padi</span>
+      <img src="assets/images/favicon.png" alt="Logo Tilik Padi" class="brand-logo-image">
+      <span>Admin Tilik Padi</span>
     </a>
 
     <div class="flex-grow-1 overflow-y-auto">
@@ -106,8 +113,8 @@ try {
     </div>
 
     <div class="sidebar-profile">
-      <img src="assets/images/logo.jpg" alt="Admin" class="sidebar-profile-img"
-        onerror="this.onerror=null;this.src='assets/images/logo.jpg'">
+      <img src="assets/images/favicon.png" alt="Admin" class="sidebar-profile-img"
+        onerror="this.onerror=null;this.src='assets/images/favicon.png'">
       <div class="sidebar-profile-info">
         <div class="sidebar-profile-name"><?= escape_html((string) $_SESSION['user']['name']) ?></div>
         <div class="sidebar-profile-email"><?= escape_html((string) $_SESSION['user']['email']) ?></div>
@@ -148,7 +155,7 @@ try {
         <div class="dropdown ms-2">
           <button class="navbar-profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
             aria-expanded="false" id="profile-dropdown">
-            <img src="assets/images/logo.jpg" alt="Foto Profil" class="navbar-profile-img">
+            <img src="assets/images/favicon.png" alt="Foto Profil" class="navbar-profile-img">
             <span class="navbar-profile-name d-none d-md-inline"><?= escape_html((string) $_SESSION['user']['name']) ?></span>
             <i class="bi bi-chevron-down navbar-profile-caret"></i>
           </button>
@@ -186,7 +193,7 @@ try {
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
           <div>
             <h2 class="h5 mb-1" id="scan-history-title">Rekam Jejak Pemindaian</h2>
-            <p class="text-muted mb-0">Menampilkan <?= count($historyRecords) ?> pemindaian terbaru dari MySQL.</p>
+            <p class="text-muted mb-0">Diurutkan berdasarkan penyakit yang paling sering dipindai.</p>
           </div>
           <div class="input-group" style="max-width: 340px">
             <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
@@ -237,7 +244,10 @@ try {
                         <span class="text-muted">Pengguna tidak tersedia</span>
                       <?php endif; ?>
                     </td>
-                    <td><strong><?= escape_html((string) $historyRecord['nama_penyakit']) ?></strong></td>
+                    <td>
+                      <strong><?= escape_html((string) $historyRecord['nama_penyakit']) ?></strong>
+                      <div class="small text-muted mt-1">Dipindai <?= (int) $historyRecord['disease_scan_count'] ?> kali</div>
+                    </td>
                     <td><?= escape_html(number_format((float) $historyRecord['confidence'], 4, ',', '.')) ?><div class="small text-muted">skor model</div></td>
                     <td>
                       <?php if (is_string($historyRecord['label_keparahan'])): ?>
@@ -261,7 +271,7 @@ try {
             </tbody>
           </table>
         </div>
-        <p class="small text-muted mb-0">Data dimuat dari MySQL (maksimal 100 scan terbaru). Laporan Excel memuat logo, tabel data pemindaian, serta path citra. Persentase infeksi ditampilkan bila tersedia dari proses deteksi.</p>
+        <p class="small text-muted mb-0">Menampilkan maksimal 100 pemindaian, diurutkan berdasarkan frekuensi penyakit lalu waktu terbaru. Laporan Excel memuat logo, tabel data pemindaian, serta path citra. Persentase infeksi ditampilkan bila tersedia dari proses deteksi.</p>
       </div>
     </section>
 
@@ -286,7 +296,7 @@ try {
     <footer class="footer-custom">
       <div class="footer-left">
         <span class="footer-logo">
-          <img src="assets/images/logo.jpg" alt="Logo Tilik Padi"> Tilik Padi
+          <img src="assets/images/favicon.png" alt="Logo Tilik Padi"> Tilik Padi
         </span>
         <span class="footer-separator">|</span>
         <span class="footer-copy">&copy; 2026 Dibuat oleh Admin Tilik Padi</span>
@@ -306,7 +316,8 @@ try {
   <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
   <script src="assets/libs/flatpickr/flatpickr.min.js"></script>
 
-  <script src="assets/js/dashboard.js"></script>
+  <script src="assets/js/dashboard.js?v=202611210049"></script>
+  <script src="assets/js/page-animations.js?v=202611210112"></script>
 </body>
 
 </html>

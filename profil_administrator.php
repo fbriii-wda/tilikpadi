@@ -29,22 +29,22 @@ $profileRole = $profileStatement->get_result()->fetch_column();
   <meta name="description" content="Profil Administrator - Tilik Padi">
   <meta name="author" content="Tim Tilik Padi">
 
-  <link rel="icon" type="image/png" href="assets/images/logo.jpg">
+  <link rel="icon" type="image/png" href="assets/images/favicon.png">
 
   <link rel="stylesheet" href="assets/libs/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/libs/bootstrap-icons/bootstrap-icons.css">
   <link rel="stylesheet" href="assets/libs/apexcharts/apexcharts.css">
   <link rel="stylesheet" href="assets/libs/flatpickr/flatpickr.min.css">
 
-  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/main.css?v=202611210112">
 </head>
 
 <body>
 
   <div class="sidebar-wrapper" id="sidebar">
     <a href="index.php" class="sidebar-brand">
-      <img src="assets/images/logo.jpg" alt="Logo Tilik Padi" class="brand-logo-image">
-      <span>Tilik Padi</span>
+      <img src="assets/images/favicon.png" alt="Logo Tilik Padi" class="brand-logo-image">
+      <span>Admin Tilik Padi</span>
     </a>
 
     <div class="flex-grow-1 overflow-y-auto">
@@ -78,8 +78,8 @@ $profileRole = $profileStatement->get_result()->fetch_column();
     </div>
 
     <div class="sidebar-profile">
-     <img src="assets/images/logo.jpg" alt="Admin" class="sidebar-profile-img"
-        onerror="this.onerror=null;this.src='assets/images/logo.jpg'">
+     <img src="assets/images/favicon.png" alt="Admin" class="sidebar-profile-img"
+        onerror="this.onerror=null;this.src='assets/images/favicon.png'">
       <div class="sidebar-profile-info">
         <div class="sidebar-profile-name"><?= escape_html((string) $_SESSION['user']['name']) ?></div>
         <div class="sidebar-profile-email"><?= escape_html((string) $_SESSION['user']['email']) ?></div>
@@ -116,7 +116,7 @@ $profileRole = $profileStatement->get_result()->fetch_column();
         <div class="dropdown ms-2">
           <button class="navbar-profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
             aria-expanded="false" id="profile-dropdown">
-            <img src="assets/images/logo.jpg" alt="Foto Profil" class="navbar-profile-img">
+            <img src="assets/images/favicon.png" alt="Foto Profil" class="navbar-profile-img">
             <span class="navbar-profile-name d-none d-md-inline"><?= escape_html((string) $_SESSION['user']['name']) ?></span>
             <i class="bi bi-chevron-down navbar-profile-caret"></i>
           </button>
@@ -182,7 +182,8 @@ $profileRole = $profileStatement->get_result()->fetch_column();
   <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
   <script src="assets/libs/flatpickr/flatpickr.min.js"></script>
 
-  <script src="assets/js/dashboard.js?v=202610220123"></script>
+  <script src="assets/js/dashboard.js?v=202611210049"></script>
+  <script src="assets/js/page-animations.js?v=202611210112"></script>
 </body>
 
 </html>

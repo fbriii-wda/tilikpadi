@@ -5,15 +5,6 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/auth.php';
 require_login();
 
-function disease_catalog_severity(float $ratio): string
-{
-    if ($ratio <= 25) {
-        return 'Ringan';
-    }
-
-    return $ratio <= 50 ? 'Sedang' : 'Parah';
-}
-
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/includes/firebase_storage.php';
 
@@ -30,7 +21,7 @@ $catalogForm = [
     'id' => '',
     'disease_name' => '',
     'cause' => '',
-    'infected_ratio' => '',
+    'severity' => '',
     'recommendation' => '',
     'image_path' => '',
 ];
@@ -42,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'id' => (string) ($_POST['id'] ?? ''),
             'disease_name' => (string) ($_POST['disease_name'] ?? ''),
             'cause' => (string) ($_POST['cause'] ?? ''),
-            'infected_ratio' => (string) ($_POST['infected_ratio'] ?? ''),
+            'severity' => (string) ($_POST['severity'] ?? ''),
             'recommendation' => (string) ($_POST['recommendation'] ?? ''),
             'image_path' => '',
         ];
@@ -96,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = trim((string) ($_POST['id'] ?? ''));
         $diseaseName = trim((string) ($_POST['disease_name'] ?? ''));
         $cause = trim((string) ($_POST['cause'] ?? ''));
-        $ratioInput = trim((string) ($_POST['infected_ratio'] ?? ''));
+        $severity = trim((string) ($_POST['severity'] ?? ''));
         $recommendation = trim((string) ($_POST['recommendation'] ?? ''));
         $editId = $id === '' ? null : filter_var($id, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 
@@ -109,8 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($cause === '' || mb_strlen($cause, 'UTF-8') > 10000) {
             throw new InvalidArgumentException('Penyebab wajib diisi dan maksimal 10.000 karakter.');
         }
-        if (!is_numeric($ratioInput) || (float) $ratioInput < 0 || (float) $ratioInput > 100) {
-            throw new InvalidArgumentException('Rasio area terinfeksi harus berupa angka antara 0 dan 100%.');
+        if (!in_array($severity, ['Ringan', 'Sedang', 'Parah'], true)) {
+            throw new InvalidArgumentException('Kategori keparahan tidak valid.');
         }
         if ($recommendation === '' || mb_strlen($recommendation, 'UTF-8') > 10000) {
             throw new InvalidArgumentException('Rekomendasi penanganan wajib diisi dan maksimal 10.000 karakter.');
@@ -161,24 +152,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $imagePath = $newImagePath ?? $existingImagePath;
-        $ratio = round((float) $ratioInput, 2);
-        $severity = disease_catalog_severity($ratio);
 
         if ($editId === null) {
             $statement = $connection->prepare(
-                'INSERT INTO disease_catalog (disease_name, cause, infected_ratio, severity, recommendation, image_path)
-                 VALUES (?, ?, ?, ?, ?, ?)'
+                'INSERT INTO disease_catalog (disease_name, cause, severity, recommendation, image_path)
+                 VALUES (?, ?, ?, ?, ?)'
             );
-            $statement->bind_param('ssdsss', $diseaseName, $cause, $ratio, $severity, $recommendation, $imagePath);
+            $statement->bind_param('sssss', $diseaseName, $cause, $severity, $recommendation, $imagePath);
             $statement->execute();
             $successMessage = 'Informasi penyakit berhasil ditambahkan.';
         } else {
             $statement = $connection->prepare(
                 'UPDATE disease_catalog
-                 SET disease_name = ?, cause = ?, infected_ratio = ?, severity = ?, recommendation = ?, image_path = ?
+                 SET disease_name = ?, cause = ?, severity = ?, recommendation = ?, image_path = ?
                  WHERE id = ?'
             );
-            $statement->bind_param('ssdsssi', $diseaseName, $cause, $ratio, $severity, $recommendation, $imagePath, $editId);
+            $statement->bind_param('sssssi', $diseaseName, $cause, $severity, $recommendation, $imagePath, $editId);
             $statement->execute();
             $successMessage = 'Informasi penyakit berhasil diperbarui.';
         }
@@ -275,22 +264,22 @@ try {
   <meta name="description" content="Kelola katalog edukasi penyakit padi dan rekomendasi penanganan.">
   <meta name="author" content="Tim Tilik Padi">
 
-  <link rel="icon" type="image/png" href="assets/images/logo.jpg">
+  <link rel="icon" type="image/png" href="assets/images/favicon.png">
 
   <link rel="stylesheet" href="assets/libs/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/libs/bootstrap-icons/bootstrap-icons.css">
   <link rel="stylesheet" href="assets/libs/apexcharts/apexcharts.css">
   <link rel="stylesheet" href="assets/libs/flatpickr/flatpickr.min.css">
 
-  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/main.css?v=202611210112">
 </head>
 
 <body>
 
   <div class="sidebar-wrapper" id="sidebar">
     <a href="index.php" class="sidebar-brand">
-      <img src="assets/images/logo.jpg" alt="Logo Tilik Padi" class="brand-logo-image">
-      <span>Tilik Padi</span>
+      <img src="assets/images/favicon.png" alt="Logo Tilik Padi" class="brand-logo-image">
+      <span>Admin Tilik Padi</span>
     </a>
 
     <div class="flex-grow-1 overflow-y-auto">
@@ -317,8 +306,8 @@ try {
     </div>
 
     <div class="sidebar-profile">
-      <img src="assets/images/logo.jpg" alt="Admin" class="sidebar-profile-img"
-        onerror="this.onerror=null;this.src='assets/images/logo.jpg'">
+      <img src="assets/images/favicon.png" alt="Admin" class="sidebar-profile-img"
+        onerror="this.onerror=null;this.src='assets/images/favicon.png'">
       <div class="sidebar-profile-info">
         <div class="sidebar-profile-name"><?= escape_html((string) $_SESSION['user']['name']) ?></div>
         <div class="sidebar-profile-email"><?= escape_html((string) $_SESSION['user']['email']) ?></div>
@@ -355,7 +344,7 @@ try {
         <div class="dropdown ms-2">
           <button class="navbar-profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
             aria-expanded="false" id="profile-dropdown">
-            <img src="assets/images/logo.jpg" alt="Foto Profil" class="navbar-profile-img">
+            <img src="assets/images/favicon.png" alt="Foto Profil" class="navbar-profile-img">
             <span class="navbar-profile-name d-none d-md-inline"><?= escape_html((string) $_SESSION['user']['name']) ?></span>
             <i class="bi bi-chevron-down navbar-profile-caret"></i>
           </button>
@@ -415,20 +404,18 @@ try {
               placeholder="Contoh: Hawar Daun Bakteri" value="<?= escape_html((string) $catalogForm['disease_name']) ?>">
           </div>
           <div class="col-12 col-lg-6">
-            <label class="form-label" for="infected-ratio">Rasio Area Daun Terinfeksi (%) <span class="text-danger">*</span></label>
-            <input class="form-control" type="number" id="infected-ratio" name="infected_ratio" min="0" max="100" step="0.01" required
-              placeholder="0-100" value="<?= escape_html((string) $catalogForm['infected_ratio']) ?>" aria-describedby="severity-guide">
-            <div class="form-text" id="severity-guide">Ringan: 0-25%; Sedang: &gt;25-50%; Parah: &gt;50-100%.</div>
+            <label class="form-label" for="severity">Kategori Keparahan <span class="text-danger">*</span></label>
+            <select class="form-select" id="severity" name="severity" required>
+              <option value="" <?= $catalogForm['severity'] === '' ? 'selected' : '' ?> disabled>Pilih kategori keparahan</option>
+              <?php foreach (['Ringan', 'Sedang', 'Parah'] as $severityOption): ?>
+                <option value="<?= escape_html($severityOption) ?>" <?= $catalogForm['severity'] === $severityOption ? 'selected' : '' ?>><?= escape_html($severityOption) ?></option>
+              <?php endforeach; ?>
+            </select>
           </div>
           <div class="col-12 col-lg-6">
             <label class="form-label" for="disease-cause">Penyebab / Patogen <span class="text-danger">*</span></label>
             <textarea class="form-control" id="disease-cause" name="cause" rows="4" maxlength="10000" required
               placeholder="Jelaskan patogen atau faktor penyebab penyakit."><?= escape_html((string) $catalogForm['cause']) ?></textarea>
-          </div>
-          <div class="col-12 col-lg-6">
-            <label class="form-label" for="severity-preview">Kategori Keparahan (otomatis)</label>
-            <input class="form-control" type="text" id="severity-preview" value="<?= $catalogForm['infected_ratio'] !== '' ? escape_html(disease_catalog_severity((float) $catalogForm['infected_ratio'])) : 'Masukkan rasio area terinfeksi' ?>" readonly>
-            <div class="form-text">Kategori dihitung dari rasio area daun terinfeksi; nilainya divalidasi ulang oleh server.</div>
           </div>
           <div class="col-12">
             <label class="form-label" for="recommendation">Rekomendasi Penanganan <span class="text-danger">*</span></label>
@@ -487,7 +474,6 @@ try {
                     <td class="text-wrap" style="min-width: 180px; max-width: 260px"><?= nl2br(escape_html((string) $record['cause'])) ?></td>
                     <td>
                       <span class="badge text-bg-<?= $record['severity'] === 'Parah' ? 'danger' : ($record['severity'] === 'Sedang' ? 'warning' : 'success') ?>"><?= escape_html((string) $record['severity']) ?></span>
-                      <div class="small text-muted mt-1"><?= escape_html(number_format((float) $record['infected_ratio'], 2, ',', '.')) ?>% area terinfeksi</div>
                     </td>
                     <td class="text-wrap" style="min-width: 200px; max-width: 320px"><?= nl2br(escape_html((string) $record['recommendation'])) ?></td>
                     <td>
@@ -522,18 +508,9 @@ try {
 
     <script>
       (() => {
-        const ratioInput = document.getElementById('infected-ratio');
-        const severityPreview = document.getElementById('severity-preview');
         const searchInput = document.getElementById('catalog-search');
         const rows = Array.from(document.querySelectorAll('[data-catalog-row]'));
         const noResults = document.getElementById('catalog-no-results');
-
-        ratioInput?.addEventListener('input', () => {
-          const ratio = Number(ratioInput.value);
-          severityPreview.value = ratioInput.value === '' || Number.isNaN(ratio)
-            ? 'Masukkan rasio area terinfeksi'
-            : ratio <= 25 ? 'Ringan' : ratio <= 50 ? 'Sedang' : 'Parah';
-        });
 
         searchInput?.addEventListener('input', () => {
           const query = searchInput.value.trim().toLocaleLowerCase('id');
@@ -551,7 +528,7 @@ try {
     <footer class="footer-custom">
       <div class="footer-left">
         <span class="footer-logo">
-          <img src="assets/images/logo.jpg" alt="Logo Tilik Padi"> Tilik Padi
+          <img src="assets/images/favicon.png" alt="Logo Tilik Padi"> Tilik Padi
         </span>
         <span class="footer-separator">|</span>
         <span class="footer-copy">&copy; 2026 Dibuat oleh Admin Tilik Padi</span>
@@ -571,7 +548,8 @@ try {
   <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
   <script src="assets/libs/flatpickr/flatpickr.min.js"></script>
 
-  <script src="assets/js/dashboard.js"></script>
+  <script src="assets/js/dashboard.js?v=202611210049"></script>
+  <script src="assets/js/page-animations.js?v=202611210112"></script>
 </body>
 
 </html>

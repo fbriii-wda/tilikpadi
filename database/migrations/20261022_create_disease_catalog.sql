@@ -2,7 +2,7 @@ CREATE TABLE `disease_catalog` (
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `disease_name` VARCHAR(150) NOT NULL,
     `cause` TEXT NOT NULL,
-    `infected_ratio` DECIMAL(5,2) NOT NULL,
+    `infected_ratio` DECIMAL(5,2) NULL DEFAULT NULL,
     `severity` ENUM('Ringan', 'Sedang', 'Parah') NOT NULL,
     `recommendation` TEXT NOT NULL,
     `image_path` VARCHAR(512) NOT NULL,

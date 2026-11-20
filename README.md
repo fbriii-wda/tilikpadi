@@ -29,9 +29,9 @@ Dashboard web ini adalah portal administrasi dan analitik sesuai proposal. Pemin
 
 ### Katalog edukasi penyakit
 
-Halaman `management_penyakit.php` menyediakan CRUD katalog penyakit. Nama penyakit, penyebab, rasio area terinfeksi, kategori keparahan, dan rekomendasi disimpan pada tabel MySQL `disease_catalog`. Jalankan migrasi [`database/migrations/20261022_create_disease_catalog.sql`](./database/migrations/20261022_create_disease_catalog.sql) satu kali pada database `tilikpadi` melalui phpMyAdmin.
+Halaman `management_penyakit.php` menyediakan CRUD katalog penyakit. Nama penyakit, penyebab, kategori keparahan, dan rekomendasi disimpan pada tabel MySQL `disease_catalog`. Jalankan migrasi [`database/migrations/20261022_create_disease_catalog.sql`](./database/migrations/20261022_create_disease_catalog.sql) pada database `tilikpadi` melalui phpMyAdmin. Jika tabel katalog sudah dibuat sebelumnya, jalankan juga [`database/migrations/20261121_make_disease_catalog_ratio_optional.sql`](./database/migrations/20261121_make_disease_catalog_ratio_optional.sql); migrasi ini mempertahankan data rasio lama tetapi mengizinkan katalog disimpan tanpa rasio.
 
-Kategori dihitung dari rasio area daun terinfeksi: Ringan 0-25%, Sedang >25-50%, dan Parah >50-100%. Gambar JPG, PNG, atau WEBP (maksimal 5 MB) disimpan di Firebase Storage; aplikasi menyimpan lokasi objeknya di MySQL dan membuat URL bertanda tangan yang berlaku satu jam saat gambar ditampilkan.
+Kategori keparahan dipilih langsung saat mengelola penyakit: Ringan, Sedang, atau Parah. Gambar JPG, PNG, atau WEBP (maksimal 5 MB) disimpan di Firebase Storage; aplikasi menyimpan lokasi objeknya di MySQL dan membuat URL bertanda tangan yang berlaku satu jam saat gambar ditampilkan.
 
 Atur environment variable `FIREBASE_STORAGE_BUCKET` dengan nama bucket dari Firebase Console, misalnya lewat PowerShell `setx FIREBASE_STORAGE_BUCKET "nama-bucket-anda"`, lalu mulai ulang Apache/Laragon. Akun layanan pada `FIREBASE_CREDENTIALS` (atau `config/firebase_key.json`) harus memiliki izin mengunggah, membaca, dan menghapus objek pada bucket Storage. Jangan memasukkan kredensial Firebase ke source control.
 

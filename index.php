@@ -19,21 +19,19 @@ $userEmail = escape_html((string) $_SESSION['user']['email']);
   <meta name="description" content="Admin Tilik Padi - Dasbor dan Sistem Pengelolaan Tilik Padi">
   <meta name="author" content="Tim Tilik Padi">
 
-  <link rel="icon" type="image/png" href="assets/images/logo.jpg">
+  <link rel="icon" type="image/png" href="assets/images/favicon.png">
 
   <link rel="stylesheet" href="assets/libs/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/libs/bootstrap-icons/bootstrap-icons.css">
   <link rel="stylesheet" href="assets/libs/apexcharts/apexcharts.css">
-  <link rel="stylesheet" href="assets/libs/flatpickr/flatpickr.min.css">
-
-  <link rel="stylesheet" href="assets/css/main.css?v=202610220112">
+  <link rel="stylesheet" href="assets/css/main.css?v=202611210112">
 </head>
 
 <body>
 
   <div class="sidebar-wrapper" id="sidebar">
     <a href="index.php" class="sidebar-brand">
-      <img src="assets/images/logo.jpg" alt="Logo Tilik Padi" class="brand-logo-image">
+      <img src="assets/images/favicon.png" alt="Logo Tilik Padi" class="brand-logo-image">
       <span>Admin Tilik Padi</span>
     </a>
 
@@ -88,8 +86,8 @@ $userEmail = escape_html((string) $_SESSION['user']['email']);
     </div>
 
     <div class="sidebar-profile">
-      <img src="assets/images/logo.jpg" alt="Admin" class="sidebar-profile-img"
-        onerror="this.onerror=null;this.src='assets/images/logo.jpg'">
+      <img src="assets/images/favicon.png" alt="Admin" class="sidebar-profile-img"
+        onerror="this.onerror=null;this.src='assets/images/favicon.png'">
       <div class="sidebar-profile-info">
         <div class="sidebar-profile-name"><?= $userName ?></div>
         <div class="sidebar-profile-email"><?= $userEmail ?></div>
@@ -126,7 +124,7 @@ $userEmail = escape_html((string) $_SESSION['user']['email']);
         <div class="dropdown ms-2">
           <button class="navbar-profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
             aria-expanded="false" id="profile-dropdown">
-            <img src="assets/images/logo.jpg" alt="Foto Profil" class="navbar-profile-img">
+            <img src="assets/images/favicon.png" alt="Foto Profil" class="navbar-profile-img">
             <span class="navbar-profile-name d-none d-md-inline"><?= $userName ?></span>
             <i class="bi bi-chevron-down navbar-profile-caret"></i>
           </button>
@@ -144,11 +142,13 @@ $userEmail = escape_html((string) $_SESSION['user']['email']);
         <h1 class="page-title">Dashboard Administrator</h1>
         <p class="page-subtitle">Pantau aktivitas pengguna dan hasil deteksi penyakit tanaman padi.</p>
       </div>
-      <button class="btn-date-picker" type="button" id="date-picker-trigger">
+      <div class="dashboard-datetime" aria-label="Tanggal dan waktu saat ini">
         <i class="bi bi-calendar4-event"></i>
-        <span id="selected-date"></span>
-        <i class="bi bi-chevron-down ms-1"></i>
-      </button>
+        <div class="dashboard-datetime-text">
+          <span id="selected-date"></span>
+          <span id="current-time"></span>
+        </div>
+      </div>
     </div>
 
     <div class="row g-4">
@@ -199,7 +199,7 @@ $userEmail = escape_html((string) $_SESSION['user']['email']);
         </div>
       </div>
 
-      <div class="col-xl-9 col-lg-8">
+      <div class="col-12">
 
         <div class="row g-4">
           <div class="col-12">
@@ -245,37 +245,12 @@ $userEmail = escape_html((string) $_SESSION['user']['email']);
         </div>
 
       </div>
-
-      <div class="col-xl-3 col-lg-4">
-        <div class="right-panel-wrapper d-flex flex-column gap-4 h-100">
-
-          <div class="card flex-grow-1 d-flex flex-column justify-content-between mb-0">
-            <div class="card-header mb-1">
-              <h2 class="card-title">Distribusi Tingkat Keparahan</h2>
-            </div>
-
-            <div id="severity-chart"></div>
-
-            <div class="chart-legends-container" id="severity-chart-legend" aria-live="polite">
-              <span class="text-muted-green">Memuat distribusi...</span>
-            </div>
-          </div>
-
-          <div class="promo-banner-card">
-            <img class="promo-banner-bg-shape" src="assets/images/favicon.png" alt="">
-
-            <h3 class="promo-title">Portal Admin Tilik Padi</h3>
-            <p class="promo-desc">Portal ini merangkum pengguna, riwayat pemindaian, dan tingkat keparahan. Hasil scan muncul setelah proses deteksi terhubung.</p>
-          </div>
-        </div>
-      </div>
-
     </div>
 
     <footer class="footer-custom">
       <div class="footer-left">
         <span class="footer-logo">
-          <img src="assets/images/logo.jpg" alt="Logo Tilik Padi"> Tilik Padi
+          <img src="assets/images/favicon.png" alt="Logo Tilik Padi"> Tilik Padi
         </span>
         <span class="footer-separator">|</span>
         <span class="footer-copy">&copy; 2026 Dibuat oleh Admin Tilik Padi</span>
@@ -293,9 +268,8 @@ $userEmail = escape_html((string) $_SESSION['user']['email']);
 
   <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
-  <script src="assets/libs/flatpickr/flatpickr.min.js"></script>
-
-  <script src="assets/js/dashboard.js?v=202610220111"></script>
+  <script src="assets/js/dashboard.js?v=202611210049"></script>
+  <script src="assets/js/page-animations.js?v=202611210112"></script>
 </body>
 
 </html>
