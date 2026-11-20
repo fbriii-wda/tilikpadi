@@ -54,7 +54,7 @@ $profileRole = $profileStatement->get_result()->fetch_column();
           <li class="sidebar-menu-item">
             <a href="index.php" class="sidebar-menu-link" id="menu-overview" title="Ringkasan">
               <i class="bi bi-grid-fill"></i>
-              <span>Dasbor</span>
+              <span>Beranda</span>
             </a>
           </li>
         </ul>

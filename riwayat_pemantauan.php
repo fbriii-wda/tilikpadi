@@ -93,7 +93,7 @@ try {
       <div class="sidebar-menu-section">
         <div class="sidebar-menu-title">Menu</div>
         <ul class="sidebar-menu-list">
-          <li class="sidebar-menu-item"><a href="index.php" class="sidebar-menu-link" id="menu-overview" title="Ringkasan"><i class="bi bi-grid-fill"></i><span>Dasbor</span></a></li>
+          <li class="sidebar-menu-item"><a href="index.php" class="sidebar-menu-link" id="menu-overview" title="Ringkasan"><i class="bi bi-grid-fill"></i><span>Beranda</span></a></li>
         </ul>
       </div>
       <div class="sidebar-menu-section">
